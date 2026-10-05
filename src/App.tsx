@@ -8,7 +8,9 @@ import { SewingMetaphorExplorer } from './components/SewingMetaphorExplorer';
 import { DuelMode } from './components/DuelMode';
 import { NEURAL_FACES, SAMPLE_FRUITS, NeuralPirinolaFace, FruitSample } from './types/neural';
 import { soundFx } from './utils/audio';
-import { BrainCircuit, Volume2, VolumeX, Compass, Layers, Scissors, Sparkles, Swords, Keyboard } from 'lucide-react';
+import { BrainCircuit, Volume2, VolumeX, Compass, Layers, Scissors, Sparkles, Swords, Keyboard, ShoppingBag, Heart } from 'lucide-react';
+import { trackEvent } from './utils/analytics';
+import { OfferCard } from './components/OfferCard';
 
 export default function App() {
   const [currentFace, setCurrentFace] = useState<NeuralPirinolaFace>(NEURAL_FACES[0]);
@@ -44,6 +46,7 @@ export default function App() {
   };
 
   const requestSpin = (targetFaceIndex?: number) => {
+    trackEvent('spin_start', { targetFace: targetFaceIndex ?? 'random' });
     setSpinTargetIndex(targetFaceIndex);
     setSpinTrigger((prev) => prev + 1);
   };
@@ -190,6 +193,33 @@ export default function App() {
 
       {/* Main Content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 space-y-8">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4" aria-label="Recursos y oferta">
+          <a
+            href="#oferta"
+            onClick={() => trackEvent('offer_view')}
+            className="group rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/15 to-rose-500/10 p-5 hover:border-amber-400/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+          >
+            <div className="flex items-center gap-3">
+              <ShoppingBag className="w-5 h-5 text-amber-300" />
+              <h2 className="font-black text-white">Lleva el método al aula</h2>
+            </div>
+            <p className="mt-2 text-sm text-zinc-300">Kit didáctico de Redes Neuronales: guía, ejercicios y retos para enseñar aprendiendo.</p>
+            <span className="mt-3 inline-block text-xs font-bold text-amber-300">Ver oferta →</span>
+          </a>
+          <a
+            href={import.meta.env.VITE_KOFI_URL || import.meta.env.VITE_BMAC_URL || '#oferta'}
+            target={import.meta.env.VITE_KOFI_URL || import.meta.env.VITE_BMAC_URL ? '_blank' : undefined}
+            rel="noreferrer"
+            onClick={() => trackEvent('support_click')}
+            className="rounded-2xl border border-zinc-700 bg-zinc-900 p-5 hover:border-zinc-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+          >
+            <div className="flex items-center gap-3">
+              <Heart className="w-5 h-5 text-rose-300" />
+              <h2 className="font-black text-white">Apoya el proyecto</h2>
+            </div>
+            <p className="mt-2 text-sm text-zinc-400">Contribuciones voluntarias para seguir desarrollando herramientas educativas abiertas.</p>
+          </a>
+        </section>
         {activeTab === 'pirinola' ? (
           <>
             {/* Hero / Stage Grid: 3D Pirinola (Left) + Pedagogical Concept (Right) */}
@@ -279,6 +309,10 @@ export default function App() {
         <span>•</span>
         <span><strong className="text-zinc-200">[M]</strong> Mute</span>
       </div>
+
+      <section id="oferta" className="max-w-6xl w-full mx-auto px-4 sm:px-6 pb-8">
+        <OfferCard />
+      </section>
 
       {/* Footer */}
       <footer className="w-full border-t border-zinc-800/80 bg-zinc-900/60 py-6 px-4 text-center text-xs text-zinc-500 space-y-1">
