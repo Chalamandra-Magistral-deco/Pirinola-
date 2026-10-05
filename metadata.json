@@ -1,6 +1,6 @@
 {
-  "name": "AI Studio Application",
-  "description": "An interactive web application built with Google AI Studio.",
+  "name": "Pirinola de Redes Neuronales",
+  "description": "Interactive educational application for learning neural network concepts through a 3D pirinola, fruit classification and a sewing-workshop metaphor.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": ["INTERACTIVE_EDUCATIONAL_EXPERIENCE"]
 }
