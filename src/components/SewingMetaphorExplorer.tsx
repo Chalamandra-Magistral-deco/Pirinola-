@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SEWING_LEVELS, SewingLevel } from '../types/neural';
 import { 
-  Scissors, Sparkles, CheckCircle2, RotateCw, ArrowRight, Lightbulb, 
-  ChevronRight, Brain, Cpu, ShieldAlert, Award
+  Scissors, CheckCircle2, RotateCw, Lightbulb, Brain
 } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 

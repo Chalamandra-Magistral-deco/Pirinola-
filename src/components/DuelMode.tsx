@@ -243,9 +243,9 @@ export const DuelMode: React.FC = () => {
             currentFace={landedFace}
             isSpinning={isSpinning}
             spinTrigger={spinTrigger}
+            showControls={false}
             onSpinStart={() => setIsSpinning(true)}
             onSpinEnd={handleSpinEnd}
-            onSelectFaceDirectly={() => {}}
           />
 
           {/* Primary Action CTA */}

@@ -17,6 +17,7 @@ export default function App() {
   const [soundOn, setSoundOn] = useState(true);
   const [activeTab, setActiveTab] = useState<'pirinola' | 'sewing' | 'duel'>('pirinola');
   const [spinTrigger, setSpinTrigger] = useState(0);
+  const [spinTargetIndex, setSpinTargetIndex] = useState<number | undefined>(undefined);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [ariaAnnouncement, setAriaAnnouncement] = useState('');
 
@@ -42,7 +43,8 @@ export default function App() {
     }
   };
 
-  const triggerSpinToFace = (index: number) => {
+  const requestSpin = (targetFaceIndex?: number) => {
+    setSpinTargetIndex(targetFaceIndex);
     setSpinTrigger((prev) => prev + 1);
   };
 
@@ -56,7 +58,7 @@ export default function App() {
 
       if (e.code === 'Space' && activeTab === 'pirinola' && !isSpinning) {
         e.preventDefault();
-        setSpinTrigger((prev) => prev + 1);
+        requestSpin();
       } else if (e.key >= '1' && e.key <= '6' && !isSpinning) {
         const faceIdx = parseInt(e.key, 10) - 1;
         if (NEURAL_FACES[faceIdx]) {
@@ -208,11 +210,9 @@ export default function App() {
                   currentFace={currentFace}
                   isSpinning={isSpinning}
                   spinTrigger={spinTrigger}
+                  spinTargetIndex={spinTargetIndex}
                   onSpinStart={handleSpinStart}
                   onSpinEnd={handleSpinEnd}
-                  onSelectFaceDirectly={(face) => {
-                    if (!isSpinning) setCurrentFace(face);
-                  }}
                 />
               </div>
 
@@ -222,7 +222,7 @@ export default function App() {
                   currentFace={currentFace}
                   isSpinning={isSpinning}
                   onSpinAgain={() => {
-                    setSpinTrigger((prev) => prev + 1);
+                    requestSpin();
                   }}
                 />
               </div>
@@ -252,7 +252,7 @@ export default function App() {
             onSelectLevelToPirinola={(faceIndex) => {
               setActiveTab('pirinola');
               setCurrentFace(NEURAL_FACES[faceIndex]);
-              setSpinTrigger((prev) => prev + 1);
+              requestSpin(faceIndex);
             }}
           />
         )}
@@ -265,7 +265,7 @@ export default function App() {
         currentFace={currentFace}
         selectedFruit={selectedFruit}
         onSelectFace={setCurrentFace}
-        onTriggerSpinToFace={triggerSpinToFace}
+        onTriggerSpinToFace={requestSpin}
       />
 
       {/* UX Keyboard Shortcuts Helper Pill */}

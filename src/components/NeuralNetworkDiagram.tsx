@@ -36,12 +36,22 @@ export const NeuralNetworkDiagram: React.FC<NeuralNetworkDiagramProps> = ({
 
   // Calculate dynamic probabilities based on selected fruit
   const isMystery = selectedFruit.id === 'pitahaya';
+  // Illustrative probabilities: normalized to 100% for pedagogical consistency.
+  const probabilitySets: Record<string, number[]> = {
+    manzana: [92, 2, 1, 1, 4],
+    platano: [2, 94, 2, 1, 1],
+    naranja: [2, 2, 90, 1, 5],
+    limon: [1, 1, 5, 92, 1],
+    fresa: [4, 1, 2, 1, 92],
+    pitahaya: [20, 18, 24, 28, 10],
+  };
+  const probs = probabilitySets[selectedFruit.id] ?? [20, 20, 20, 20, 20];
   const outputNodes = [
-    { id: 'out-manzana', name: 'Manzana 🍎', prob: isMystery ? 22 : selectedFruit.id === 'manzana' ? 92 : selectedFruit.id === 'fresa' ? 12 : 3 },
-    { id: 'out-platano', name: 'Plátano 🍌', prob: isMystery ? 18 : selectedFruit.id === 'platano' ? 94 : 2 },
-    { id: 'out-naranja', name: 'Naranja 🍊', prob: isMystery ? 24 : selectedFruit.id === 'naranja' ? 89 : selectedFruit.id === 'limon' ? 15 : 4 },
-    { id: 'out-limon', name: 'Limón 🍋', prob: isMystery ? 26 : selectedFruit.id === 'limon' ? 95 : 1 },
-    { id: 'out-fresa', name: 'Fresa 🍓', prob: isMystery ? 10 : selectedFruit.id === 'fresa' ? 91 : selectedFruit.id === 'manzana' ? 5 : 2 },
+    { id: 'out-manzana', name: 'Manzana 🍎', prob: probs[0] },
+    { id: 'out-platano', name: 'Plátano 🍌', prob: probs[1] },
+    { id: 'out-naranja', name: 'Naranja 🍊', prob: probs[2] },
+    { id: 'out-limon', name: 'Limón 🍋', prob: probs[3] },
+    { id: 'out-fresa', name: 'Fresa 🍓', prob: probs[4] },
   ];
 
   const isLayerActive = (layer: string) => {
@@ -81,7 +91,7 @@ export const NeuralNetworkDiagram: React.FC<NeuralNetworkDiagramProps> = ({
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-800 border border-zinc-700 text-xs">
           <span
             className="w-2.5 h-2.5 rounded-full animate-pulse"
-            style={{ backgroundColor: currentFace.accentColor.replace('text-', '') }}
+            style={{ backgroundColor: currentFace.glowColor }}
           />
           <span className="font-semibold text-zinc-200">
             {isSpinning ? 'Calculando señales...' : currentFace.role}

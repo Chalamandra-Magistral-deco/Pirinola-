@@ -8,22 +8,26 @@ interface Pirinola3DProps {
   currentFace: NeuralPirinolaFace;
   isSpinning: boolean;
   spinTrigger?: number;
+  spinTargetIndex?: number;
+  showControls?: boolean;
   onSpinStart: () => void;
   onSpinEnd: (face: NeuralPirinolaFace) => void;
-  onSelectFaceDirectly: (face: NeuralPirinolaFace) => void;
 }
 
 export const Pirinola3D: React.FC<Pirinola3DProps> = ({
   currentFace,
   isSpinning,
   spinTrigger = 0,
+  spinTargetIndex,
+  showControls = true,
   onSpinStart,
   onSpinEnd,
-  onSelectFaceDirectly,
 }) => {
   const [currentRotationY, setCurrentRotationY] = useState(0);
   const [wobbleX, setWobbleX] = useState(-14);
-  const spinIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const spinIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const spinTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const processedTriggerRef = useRef(0);
   const totalSpinsRef = useRef(0);
 
   // Trigger spin
@@ -32,9 +36,11 @@ export const Pirinola3D: React.FC<Pirinola3DProps> = ({
     onSpinStart();
 
     // Pick target face
-    const targetIdx = specificFaceIndex !== undefined 
-      ? specificFaceIndex 
-      : Math.floor(Math.random() * NEURAL_FACES.length);
+    const targetIdx = specificFaceIndex !== undefined
+      ? specificFaceIndex
+      : spinTargetIndex !== undefined
+        ? spinTargetIndex
+        : Math.floor(Math.random() * NEURAL_FACES.length);
     const selectedFace = NEURAL_FACES[targetIdx];
 
     // Compute rotation
@@ -57,22 +63,26 @@ export const Pirinola3D: React.FC<Pirinola3DProps> = ({
     }, 110);
 
     // Stop after animation duration (2.8s)
-    setTimeout(() => {
+    if (spinTimeoutRef.current) clearTimeout(spinTimeoutRef.current);
+    spinTimeoutRef.current = setTimeout(() => {
       setWobbleX(-14);
       onSpinEnd(selectedFace);
       soundFx.playLand(selectedFace.id);
+      spinTimeoutRef.current = null;
     }, 2800);
   };
 
   useEffect(() => {
-    if (spinTrigger > 0 && !isSpinning) {
+    if (spinTrigger > 0 && spinTrigger !== processedTriggerRef.current && !isSpinning) {
+      processedTriggerRef.current = spinTrigger;
       triggerSpin();
     }
-  }, [spinTrigger]);
+  }, [spinTrigger, spinTargetIndex, isSpinning]);
 
   useEffect(() => {
     return () => {
       if (spinIntervalRef.current) clearInterval(spinIntervalRef.current);
+      if (spinTimeoutRef.current) clearTimeout(spinTimeoutRef.current);
     };
   }, []);
 
@@ -180,7 +190,7 @@ export const Pirinola3D: React.FC<Pirinola3DProps> = ({
         </div>
       </div>
 
-      {/* Main Spin CTA Button */}
+      {showControls && (
       <div className="mt-4 flex flex-col items-center gap-3 w-full max-w-sm">
         <button
           onClick={() => triggerSpin()}
@@ -237,6 +247,7 @@ export const Pirinola3D: React.FC<Pirinola3DProps> = ({
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 };

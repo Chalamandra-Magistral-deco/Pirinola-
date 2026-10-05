@@ -1,17 +1,15 @@
 import React from 'react';
 import { SAMPLE_FRUITS, FruitSample } from '../types/neural';
-import { Apple, Sliders, Sparkles } from 'lucide-react';
+import { Apple } from 'lucide-react';
 
 interface FruitTesterProps {
   selectedFruit: FruitSample;
   onSelectFruit: (fruit: FruitSample) => void;
-  onUpdateCustomFruit?: (fruit: FruitSample) => void;
 }
 
 export const FruitTester: React.FC<FruitTesterProps> = ({
   selectedFruit,
   onSelectFruit,
-  onUpdateCustomFruit,
 }) => {
   return (
     <div className="w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-5 sm:p-6 text-white shadow-xl space-y-5">
