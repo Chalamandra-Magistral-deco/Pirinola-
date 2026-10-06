@@ -1,11 +1,20 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig} from 'vite';
+import {defineConfig, loadEnv} from 'vite';
 
-export default defineConfig(() => {
+export default defineConfig(({mode}) => {
+  const siteUrl = loadEnv(mode, process.cwd(), 'VITE_').VITE_SITE_URL || 'https://pirinola-neural.vercel.app';
+
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      {
+        name: 'pirinola-site-url',
+        transformIndexHtml: (html) => html.replaceAll('%PIRINOLA_SITE_URL%', siteUrl),
+      },
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
