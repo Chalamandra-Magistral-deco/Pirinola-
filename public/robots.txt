@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pirinola-neural.vercel.app/sitemap.xml
+Sitemap: https://pirinola.chalamandramagistral.com/sitemap.xml
