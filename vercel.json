@@ -1,6 +1,10 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
   "rewrites": [
-    { "source": "/((?!ads\\.txt$).*)", "destination": "/index.html" }
+    { "source": "/ads.txt", "destination": "/ads.txt" },
+    { "source": "/app-ads.txt", "destination": "/app-ads.txt" }
+  ],
+  "headers": [
+    { "source": "/ads.txt", "headers": [{ "key": "Content-Type", "value": "text/plain" }] }
   ]
 }
